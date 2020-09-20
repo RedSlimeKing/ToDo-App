@@ -8,62 +8,80 @@
     android:windowSoftInputMode="adjustNothing"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/listName"
-        android:layout_width="133dp"
-        android:layout_height="45dp"
+    <RelativeLayout
+        android:id="@+id/tableRow"
+        android:layout_width="401dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="16dp"
-        android:background="@android:color/transparent"
-        android:text="List Name"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/settingButton"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingEnd="-50dp"
+        android:paddingStart="-50dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/settingButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="0dp"
+            android:layout_toEndOf="@+id/listName"
+            android:background="@drawable/ic_setting"
+            android:scaleX="0.7"
+            android:scaleY="0.7" />
+
+        <Button
+            android:id="@+id/add"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/tabs"
+            android:background="@drawable/ic_add"
+            android:scaleX="0.7"
+            android:scaleY="0.7" />
+
+        <Button
+            android:id="@+id/tabs"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/settingButton"
+            android:background="@drawable/ic_new_page"
+            android:scaleX="0.7"
+            android:scaleY="0.7" />
+
+        <EditText
+            android:id="@+id/listName"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="0dp"
+            android:background="@android:color/transparent"
+            android:maxLength="13"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recView"
         android:layout_width="0dp"
-        android:layout_height="551dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listName">
-
-
+        app:layout_constraintTop_toBottomOf="@+id/tableRow">
     </androidx.recyclerview.widget.RecyclerView>
-
-    <Button
-        android:id="@+id/settingButton"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="54dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/ic_setting"
-        app:layout_constraintEnd_toStartOf="@+id/button5"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="54dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/ic_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="54dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/ic_new_page"
-        app:layout_constraintEnd_toStartOf="@+id/button4"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

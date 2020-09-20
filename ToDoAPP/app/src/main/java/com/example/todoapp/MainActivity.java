@@ -1,21 +1,17 @@
 package com.example.todoapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<TaskItem> mList;
     private EditText mListName;
     private RecyclerViewAdapter adapter;
-    private Button mAddButton, mStartButton;
     private InputMethodManager imm;
 
     @Override
@@ -65,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private void InitRecyclerView(){
         RecyclerView rView = findViewById(R.id.recView);
         rView.setHasFixedSize(true);
-        adapter = new RecyclerViewAdapter(this, mList);
+        adapter = new RecyclerViewAdapter(this, mList, rView);
         rView.setAdapter(adapter);
         rView.setLayoutManager(new LinearLayoutManager(this));
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new MySwipeHelper(this, rView,200) {
@@ -77,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(int pos) {
                                 if(pos != mList.size()-1){
                                     adapter.deleteItem(pos);
-                                } else {
-                                    return;
                                 }
                             }
                         })
