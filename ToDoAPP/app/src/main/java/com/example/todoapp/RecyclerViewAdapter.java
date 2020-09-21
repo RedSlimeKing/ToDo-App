@@ -54,13 +54,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
 
-        holder.box.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mList.get(position).isCompleted = holder.box.isChecked();
-                holder.box.clearFocus();
-                notifyDataSetChanged();
-            }
+        holder.box.setOnClickListener(view -> {
+            mList.get(position).isCompleted = holder.box.isChecked();
+            holder.box.clearFocus();
+            notifyDataSetChanged();
         });
 
         holder.text.setOnClickListener(view -> {
@@ -87,11 +84,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             return false;
         });
 
-        holder.layout.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
+        holder.layout.setOnClickListener(view -> {
 
-            }
         });
     }
     public void deleteItem(int position) {
@@ -109,10 +103,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemCount() {
         return mList.size();
-    }
-
-    public Context getContext(){
-        return mContext;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
