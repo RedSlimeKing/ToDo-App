@@ -34,8 +34,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_layout, parent,false);
-        return new ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item, parent,false);
+        ViewHolder holder = new ViewHolder(view);
+        if(holder.text.getText().toString().equals("")){
+            holder.box.setVisibility(View.GONE);
+        }
+        holder.text.setHint("Enter Task");
+        return holder;
     }
 
     @Override
@@ -44,6 +49,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.box.setChecked(item.isCompleted);
         holder.text.setText(item.taskString);
+        
+        if(!item.taskString.equals("")){
+            holder.box.setVisibility(View.VISIBLE);
+        }
 
         holder.box.setOnClickListener(view -> {
             mList.get(position).isCompleted = holder.box.isChecked();
@@ -52,8 +61,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         });
 
         holder.text.setOnClickListener(view -> {
-            //holder.text.requestFocus();
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY); // Open Keyboard
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         });
 
         holder.text.setOnKeyListener((v, keyCode, event) -> {
@@ -75,15 +83,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             return false;
         });
 
-        holder.layout.setOnClickListener(view -> {
-
-        });
-
-        if(holder.text.getText().toString().equals("")){
-            //holder.box.setVisibility(View.GONE);
-            holder.text.setHint("Enter Task");
-        }
+        holder.layout.setOnClickListener(view -> { });
     }
+
     public void deleteItem(int position) {
         mList.remove(position);
         notifyItemRemoved(position);

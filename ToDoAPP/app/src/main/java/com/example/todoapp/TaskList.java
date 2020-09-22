@@ -28,8 +28,8 @@ public class TaskList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_list);
 
-        //mListName = findViewById(R.id.listName);
-        //mListName.setHint("List name");
+        mListName = findViewById(R.id.listName);
+        mListName.setHint("List name");
 
         // Stop items in scene from being pushed up by keyboard
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
@@ -37,7 +37,7 @@ public class TaskList extends AppCompatActivity {
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
         mList = FileHelper.LoadTask(this);
-        /*
+
         mListName.setText(FileHelper.GetListName());
         mListName.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&  (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -47,11 +47,11 @@ public class TaskList extends AppCompatActivity {
             }
             return false;
         });
-        */
+
         InitRecyclerView();
 
         if(mList.size() <= 0){
-            //mListName.setText("");
+            mListName.setText("");
             mList.add(new TaskItem("",false));
             adapter.notifyDataSetChanged();
         }

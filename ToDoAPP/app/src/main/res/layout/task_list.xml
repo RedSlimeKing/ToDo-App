@@ -8,32 +8,6 @@
     android:windowSoftInputMode="adjustNothing"
     tools:context=".TaskList">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@android:id/title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ellipsize="marquee"
-            android:gravity="center_vertical"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"/>
-
-        <de.mrapp.android.util.view.UnfocusableToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:focusable="false"
-            android:theme="?attr/toolbarTheme"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
-    </FrameLayout>
-
-    <!--
     <RelativeLayout
         android:id="@+id/tableRow"
         android:layout_width="401dp"
@@ -92,10 +66,8 @@
             android:maxLength="13"
             android:textAlignment="center"
             android:textSize="24sp" />
-
-
     </RelativeLayout>
-    -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recView"
         android:layout_width="0dp"
