@@ -35,12 +35,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_layout, parent,false);
-        ViewHolder holder = new ViewHolder(view);
-        if(holder.text.getText().toString().equals("")){
-            holder.box.setVisibility(View.GONE);
-        }
-        holder.text.setHint("Enter Task");
-        return holder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -49,10 +44,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.box.setChecked(item.isCompleted);
         holder.text.setText(item.taskString);
-        if(!item.taskString.equals("")){
-            holder.box.setVisibility(View.VISIBLE);
-        }
-
 
         holder.box.setOnClickListener(view -> {
             mList.get(position).isCompleted = holder.box.isChecked();
@@ -87,6 +78,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.layout.setOnClickListener(view -> {
 
         });
+
+        if(holder.text.getText().toString().equals("")){
+            //holder.box.setVisibility(View.GONE);
+            holder.text.setHint("Enter Task");
+        }
     }
     public void deleteItem(int position) {
         mList.remove(position);
