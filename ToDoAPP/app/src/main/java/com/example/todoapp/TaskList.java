@@ -7,10 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,17 +17,17 @@ import java.util.List;
 public class TaskList extends AppCompatActivity {
 
     private ArrayList<TaskItem> mList;
-    private EditText mListName;
+    //private EditText mListName;
     private RecyclerViewAdapter adapter;
     private InputMethodManager imm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.task_list);
+        setContentView(R.layout.item_layout);
 
-        mListName = findViewById(R.id.listName);
-        mListName.setHint("List name");
+        //mListName = findViewById(R.id.listName);
+        //mListName.setHint("List name");
 
         // Stop items in scene from being pushed up by keyboard
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
@@ -38,8 +36,8 @@ public class TaskList extends AppCompatActivity {
 
         mList = FileHelper.LoadTask(this);
 
-        mListName.setText(FileHelper.GetListName());
-        mListName.setOnKeyListener((v, keyCode, event) -> {
+        //mListName.setText(FileHelper.GetListName());
+        /*mListName.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&  (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 mListName.clearFocus();
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -47,20 +45,21 @@ public class TaskList extends AppCompatActivity {
             }
             return false;
         });
+        */
 
         InitRecyclerView();
 
         if(mList.size() <= 0){
-            mListName.setText("");
+            //mListName.setText("");
             mList.add(new TaskItem("",false));
             adapter.notifyDataSetChanged();
         }
     }
 
     private void InitRecyclerView(){
-        RecyclerView rView = findViewById(R.id.recView);
+        RecyclerView rView = findViewById(R.id.recyclerView);
         rView.setHasFixedSize(true);
-        adapter = new RecyclerViewAdapter(TaskList.this, mList, rView);
+        adapter = new RecyclerViewAdapter(TaskList.this, mList);
         rView.setAdapter(adapter);
         rView.setLayoutManager(new LinearLayoutManager(this));
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new MySwipeHelper(TaskList.this, rView,200) {
@@ -84,7 +83,8 @@ public class TaskList extends AppCompatActivity {
     @Override
     public void onStop(){
         super.onStop();
-        FileHelper.WriteData(this, mList, mListName.getText().toString());
+        //mListName.getText().toString()
+        FileHelper.WriteData(this, mList, "");
     }
 
 

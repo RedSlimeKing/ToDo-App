@@ -10,22 +10,24 @@
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:paddingVertical="18dp"
         android:scaleX="1.5"
         android:scaleY="1.5"
-        android:layout_marginLeft="24dp"
-        android:paddingVertical="18dp"
         tools:layout_editor_absoluteX="46dp"
         tools:layout_editor_absoluteY="23dp" />
 
     <EditText
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/checkBox"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/checkBox"
         android:background="@android:color/transparent"
-        android:textSize="24sp"
         android:paddingVertical="12dp"
+        android:textSize="24sp"
         tools:layout_editor_absoluteX="114dp"
         tools:layout_editor_absoluteY="23dp" />
 

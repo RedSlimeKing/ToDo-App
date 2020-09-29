@@ -9,10 +9,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -21,14 +23,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public ArrayList<TaskItem> mList;
     private Context mContext;
-    private RecyclerView mRecyclerView;
     private InputMethodManager imm;
 
-    public RecyclerViewAdapter(Context context, ArrayList<TaskItem> ls, RecyclerView rView){
+    public RecyclerViewAdapter(Context context, ArrayList<TaskItem> ls){
         mContext = context;
         mList = ls;
         imm = (InputMethodManager) mContext.getSystemService(INPUT_METHOD_SERVICE);
-        mRecyclerView = rView;
     }
 
     @NonNull
@@ -49,7 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.box.setChecked(item.isCompleted);
         holder.text.setText(item.taskString);
-        
+
         if(!item.taskString.equals("")){
             holder.box.setVisibility(View.VISIBLE);
         }

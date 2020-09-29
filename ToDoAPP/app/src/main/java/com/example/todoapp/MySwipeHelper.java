@@ -139,7 +139,7 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
             return false;
         }
 
-        public void onDraw(Canvas canvas,RectF rectF, int pos){
+        public void onDraw(Canvas canvas, RectF rectF, int pos){
             Paint p = new Paint();
             p.setColor(color);
             canvas.drawRect(rectF, p);
@@ -152,7 +152,7 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
             float cWidth = rectF.width();
             p.setTextAlign(Paint.Align.LEFT);
             p.getTextBounds(text, 0, text.length(), r);
-            float x=0,y=0;
+            float x=0, y=0;
             if(imageResId== 0){
                 x = cWidth/2f - r.width()/2f - r.left;
                 y = cHeight/2f + r.height()/2f - r.bottom;
@@ -160,8 +160,9 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
             } else {
                 Drawable d = ContextCompat.getDrawable(mContext, imageResId);
                 Bitmap bitmap = drawableToBitmap(d);
-                // Change:  moved brackets below from (left+right)/2 & (top+bottom)/2
-                canvas.drawBitmap(bitmap, (rectF.left+rectF.right)/2.2f, (rectF.top+rectF.bottom)/2.1f, p);
+                float bw = bitmap.getWidth()/2;
+                float bh = bitmap.getHeight()/2;
+                canvas.drawBitmap(bitmap, ((rectF.left+rectF.right)/2)-bw, ((rectF.top+rectF.bottom)/2 - bh), p);
             }
             clickRegion = rectF;
             this.pos = pos;
@@ -221,7 +222,7 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onChildDraw(@NonNull Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-       int pos= viewHolder.getAdapterPosition();
+       int pos = viewHolder.getAdapterPosition();
        float transitionX = dX;
        View itemView = viewHolder.itemView;
 
@@ -238,19 +239,18 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
                } else {
                    buffer = buttonBuffer.get(pos);
                }
-               transitionX = dX*buttonBuffer.size() * buttonWidth / itemView.getWidth();
+               transitionX = dX * buttonBuffer.size() * buttonWidth / itemView.getWidth();
                drawButton(c, itemView, buffer, pos, transitionX);
            }
        }
-       super.onChildDraw(c,recyclerView, viewHolder,transitionX,dY,actionState,isCurrentlyActive);
+       super.onChildDraw(c, recyclerView, viewHolder, transitionX, dY, actionState, isCurrentlyActive);
     }
 
     private void drawButton(Canvas c, View itemView, List<MyButton> buffer, int pos, float transitionX) {
         float right = itemView.getRight();
         float dButtonWidth = -1 * transitionX / buffer.size();
         for(MyButton button:buffer){
-            // Change: dButtonWidth to Math.max(dButtonWidth, buttonWidth)
-            float left = right - Math.max(dButtonWidth, buttonWidth);
+            float left = right - dButtonWidth;
             button.onDraw(c, new RectF(left, itemView.getTop(), right, itemView.getBottom()), pos);
             right = left;
         }
