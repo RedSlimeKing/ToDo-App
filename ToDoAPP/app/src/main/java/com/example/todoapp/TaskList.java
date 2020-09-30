@@ -87,5 +87,4 @@ public class TaskList extends AppCompatActivity {
         FileHelper.WriteData(this, mList, "");
     }
 
-
 }

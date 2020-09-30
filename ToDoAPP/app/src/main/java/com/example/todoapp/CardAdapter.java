@@ -1,8 +1,11 @@
 package com.example.todoapp;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -11,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
-    private ArrayList<String> mTitleList;
+    private ArrayList<CardItem> mCardItems;
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener{
@@ -22,8 +25,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         mListener = listener;
     }
 
-    public CardAdapter(ArrayList<String> list){
-        mTitleList = list;
+    public CardAdapter(ArrayList<CardItem> list){
+        mCardItems = list;
     }
 
     @NonNull
@@ -36,22 +39,33 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        String title = mTitleList.get(position);
+        CardItem item = mCardItems.get(position);
+        String title = item.getTitle();
         holder.mTextView.setText(title);
+
+        holder.mTextView.setOnKeyListener((v, keyCode, event) -> {
+            // If the event is a key-down event on the "enter" button
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&  (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                item.setTitle(holder.mTextView.getText().toString());
+                notifyDataSetChanged();
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
     public int getItemCount() {
-        return mTitleList.size();
+        return mCardItems.size();
     }
 
     public void deleteItem(int position) {
-        mTitleList.remove(position);
+        mCardItems.remove(position);
         notifyItemRemoved(position);
     }
 
     class CardViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTextView;
+        public EditText mTextView;
         public CardViewHolder(View itemView, OnItemClickListener listener){
             super(itemView);
 

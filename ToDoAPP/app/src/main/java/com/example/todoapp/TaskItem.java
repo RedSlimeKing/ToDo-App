@@ -1,6 +1,8 @@
 package com.example.todoapp;
 
-public class TaskItem {
+import java.io.Serializable;
+
+public class TaskItem implements Serializable {
     public String taskString;
     public boolean isCompleted;
 

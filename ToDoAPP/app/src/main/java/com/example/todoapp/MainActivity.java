@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private CardAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<String> cardList;
+    private ArrayList<CardItem> mCardItems;
 
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
@@ -33,16 +33,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.mainToolBar);
         setSupportActionBar(toolbar);
 
-        cardList = new ArrayList<>();
-        cardList.add("List 1");
-        cardList.add("List 2");
-        cardList.add("List 3");
-        cardList.add("List 4");
+        mCardItems = new ArrayList<>();
+        mCardItems.add(new CardItem("List 1", new ArrayList<>()));
+        mCardItems.add(new CardItem("List 2", new ArrayList<>()));
+        mCardItems.add(new CardItem("List 3", new ArrayList<>()));
+        mCardItems.add(new CardItem("List 4", new ArrayList<>()));
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new CardAdapter(cardList);
+        mAdapter = new CardAdapter(mCardItems);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
@@ -63,11 +63,14 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new CardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                //cardList.get(position).setText1("Clicked!");
-                //mAdapter.notifyDataSetChanged();
 
-                //Intent intent = new Intent(MainActivity.this, TaskList.class);
-                //startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, TaskList.class);
+                intent.putExtra("Tasklist", mCardItems.get(position).getTaskItems());
+
+                startActivity(intent);
+
+                //Read the list from the intent:
+                ArrayList<TaskItem> items = (ArrayList<TaskItem>) intent.getSerializableExtra("Tasklist");
             }
         });
     }
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.add:
-                cardList.add("Added new");
+                mCardItems.add(new CardItem("New Item Added", new ArrayList<>()));
 
                 mAdapter.notifyDataSetChanged();
                 return true;
