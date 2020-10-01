@@ -1,8 +1,9 @@
 package com.example.todoapp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CardItem {
+public class CardItem implements Serializable {
     private String mTitle;
     private ArrayList<TaskItem> mTaskItems;
 

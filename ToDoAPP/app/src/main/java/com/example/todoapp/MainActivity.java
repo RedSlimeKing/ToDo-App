@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new CardAdapter(mCardItems);
+        mAdapter = new CardAdapter(mCardItems, MainActivity.this);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
@@ -63,14 +64,11 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new CardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-
+                CardItem item = mCardItems.get(position);
                 Intent intent = new Intent(MainActivity.this, TaskList.class);
-                intent.putExtra("Tasklist", mCardItems.get(position).getTaskItems());
+                intent.putExtra("Card", item);
 
                 startActivity(intent);
-
-                //Read the list from the intent:
-                ArrayList<TaskItem> items = (ArrayList<TaskItem>) intent.getSerializableExtra("Tasklist");
             }
         });
     }

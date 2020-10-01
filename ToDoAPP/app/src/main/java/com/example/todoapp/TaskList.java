@@ -9,34 +9,36 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class TaskList extends AppCompatActivity {
 
-    private ArrayList<TaskItem> mList;
-    //private EditText mListName;
+    private CardItem mCardItem;
+    private EditText mListName;
     private RecyclerViewAdapter adapter;
     private InputMethodManager imm;
+    private  RecyclerView rView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.item_layout);
+        setContentView(R.layout.activity_list);
 
-        //mListName = findViewById(R.id.listName);
-        //mListName.setHint("List name");
+        //Read the list from the intent:
+        mCardItem = (CardItem) getIntent().getSerializableExtra("Card");
+
+        mListName = findViewById(R.id.title_editText);
+        mListName.setText(mCardItem.getTitle());
 
         // Stop items in scene from being pushed up by keyboard
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
-        mList = FileHelper.LoadTask(this);
-
-        //mListName.setText(FileHelper.GetListName());
         /*mListName.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&  (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 mListName.clearFocus();
@@ -47,27 +49,30 @@ public class TaskList extends AppCompatActivity {
         });
         */
 
+
+
         InitRecyclerView();
 
-        if(mList.size() <= 0){
-            //mListName.setText("");
-            mList.add(new TaskItem("",false));
+        if(mCardItem.getTaskItems().size() <= 0){
+            mCardItem.getTaskItems().add(new TaskItem("",false));
             adapter.notifyDataSetChanged();
         }
     }
 
     private void InitRecyclerView(){
-        RecyclerView rView = findViewById(R.id.recyclerView);
+        rView = findViewById(R.id.recyclerView2);
+
         rView.setHasFixedSize(true);
-        adapter = new RecyclerViewAdapter(TaskList.this, mList);
+        adapter = new RecyclerViewAdapter(TaskList.this, mCardItem.getTaskItems());
         rView.setAdapter(adapter);
         rView.setLayoutManager(new LinearLayoutManager(this));
+
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new MySwipeHelper(TaskList.this, rView,200) {
             @Override
             public void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buffer) {
                 buffer.add(new MyButton(TaskList.this, "Delete", 30,R.drawable.ic_delete, Color.parseColor("#FF3c30"),
                         pos -> {
-                            if(pos != mList.size()-1){
+                            if(pos != mCardItem.getTaskItems().size() - 1){
                                 adapter.deleteItem(pos);
                             }
                         })
@@ -83,8 +88,11 @@ public class TaskList extends AppCompatActivity {
     @Override
     public void onStop(){
         super.onStop();
-        //mListName.getText().toString()
-        FileHelper.WriteData(this, mList, "");
+
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }
