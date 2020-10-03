@@ -27,4 +27,6 @@ public class CardItem implements Serializable {
     public void setTaskItems(ArrayList<TaskItem> mTaskItems) {
         this.mTaskItems = mTaskItems;
     }
+
+    public void addTaskItem(TaskItem ti){ this.mTaskItems.add(ti);}
 }

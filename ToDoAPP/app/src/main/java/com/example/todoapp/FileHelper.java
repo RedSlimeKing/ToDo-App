@@ -2,6 +2,7 @@ package com.example.todoapp;
 
 /* File systems */
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -15,20 +16,22 @@ import java.util.ArrayList;
 public class FileHelper {
 
     private static final String filename = "StoredTask.txt";
-    private static String mListName;
 
-    public static String GetListName(){ return mListName; }
-
-    public static void WriteData(Context context, ArrayList<TaskItem> ls, String listName){
+    public static void WriteData(Context context, ArrayList<CardItem> ls){
         FileOutputStream fos;
         ArrayList<String> saveData = new ArrayList<>();
-        for(TaskItem ti : ls){
-            String item = ti.taskString + "[|]" + ti.isCompleted;
-            saveData.add(item);
+        if(ls.size() <= 0){
+            return;
         }
-        // Add list name to front of queue to save
-        String item = "ListName" + "[|]" + listName;
-        saveData.add(0, item);
+        for(int i = 0; i < ls.size(); i++){
+            CardItem ci = ls.get(i);
+            String item = "ListName" + "[|]" + ci.getTitle();
+            saveData.add(item);
+            for(TaskItem ti : ci.getTaskItems()){
+                item = ti.taskString + "[|]" + ti.isCompleted;
+                saveData.add(item);
+            }
+        }
 
         try{
             fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
@@ -40,8 +43,8 @@ public class FileHelper {
         }
     }
 
-    public static ArrayList<TaskItem> LoadTask(Context context){
-        ArrayList<TaskItem> taskItems = new ArrayList<>();
+    public static ArrayList<CardItem> LoadTask(Context context){
+        ArrayList<CardItem> cardItems = new ArrayList<>();
         FileInputStream fis = null;
 
         try{
@@ -49,17 +52,19 @@ public class FileHelper {
             fis = context.openFileInput(filename);
             ObjectInputStream ois = new ObjectInputStream(fis);
             items = (ArrayList<String>) ois.readObject();
-
+            int index = -1;
             for(int i = 0; i < items.size(); i++){
                 String[] parts = items.get(i).split("[|]");
-                String part1 = parts[0].substring(0, parts[0].length() - 1);
-                String part2 = parts[1].substring(1);
-                //Toast.makeText(context, part1, Toast.LENGTH_SHORT).show();
+                String part1 = "", part2 = "";
+                part1 = parts[0].substring(0, parts[0].length() - 1);
+                part2 = parts[1].substring(1);
+
+
                 if(part1.equals("ListName")){
-                    mListName = part2;
-                }
-                else {
-                    taskItems.add(new TaskItem(part1, Boolean.parseBoolean(part2)));
+                    index++;
+                    cardItems.add(new CardItem(part2, new ArrayList<>()));
+                } else {
+                    cardItems.get(index).addTaskItem(new TaskItem(part1, Boolean.parseBoolean(part2)));
                 }
             }
         } catch(IOException | ClassNotFoundException e){
@@ -73,6 +78,6 @@ public class FileHelper {
                 }
             }
         }
-        return taskItems;
+        return cardItems;
     }
 }

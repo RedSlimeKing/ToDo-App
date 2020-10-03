@@ -68,6 +68,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
             super(itemView);
 
             mTextView = itemView.findViewById(R.id.list_title);
+            mTextView.setHint("List name");
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

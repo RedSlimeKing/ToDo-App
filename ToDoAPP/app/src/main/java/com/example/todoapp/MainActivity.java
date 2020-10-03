@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -34,11 +35,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.mainToolBar);
         setSupportActionBar(toolbar);
 
-        mCardItems = new ArrayList<>();
-        mCardItems.add(new CardItem("List 1", new ArrayList<>()));
-        mCardItems.add(new CardItem("List 2", new ArrayList<>()));
-        mCardItems.add(new CardItem("List 3", new ArrayList<>()));
-        mCardItems.add(new CardItem("List 4", new ArrayList<>()));
+        mCardItems = FileHelper.LoadTask(this);
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -67,10 +64,17 @@ public class MainActivity extends AppCompatActivity {
                 CardItem item = mCardItems.get(position);
                 Intent intent = new Intent(MainActivity.this, TaskList.class);
                 intent.putExtra("Card", item);
+                intent.putExtra("APosition", position);
 
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FileHelper.WriteData(this, mCardItems);
     }
 
     @Override
@@ -96,4 +100,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1){
+            if(resultCode == 1){
+                CardItem ci = (CardItem) data.getSerializableExtra("returnCard");
+                int Pos = data.getIntExtra("APos", 0);
+                mCardItems.set(Pos, ci);
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 }

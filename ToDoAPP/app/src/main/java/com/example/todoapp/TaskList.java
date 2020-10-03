@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -22,6 +23,7 @@ public class TaskList extends AppCompatActivity {
     private RecyclerViewAdapter adapter;
     private InputMethodManager imm;
     private  RecyclerView rView;
+    private int mPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class TaskList extends AppCompatActivity {
 
         //Read the list from the intent:
         mCardItem = (CardItem) getIntent().getSerializableExtra("Card");
+        mPosition = getIntent().getIntExtra("APosition", 0);
 
         mListName = findViewById(R.id.title_editText);
         mListName.setText(mCardItem.getTitle());
@@ -93,6 +96,10 @@ public class TaskList extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("returnCard", mCardItem);
+        resultIntent.putExtra("APos", mPosition);
+        setResult(1, resultIntent);
         super.onBackPressed();
     }
 }
