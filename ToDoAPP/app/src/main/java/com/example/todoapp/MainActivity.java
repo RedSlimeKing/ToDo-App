@@ -29,9 +29,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Intent intent = new Intent(this, TaskList.class);
-        //startActivity(intent);
-
         Toolbar toolbar = findViewById(R.id.mainToolBar);
         setSupportActionBar(toolbar);
 
@@ -89,8 +86,16 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.add:
                 mCardItems.add(new CardItem("New Item Added", new ArrayList<>()));
-
                 mAdapter.notifyDataSetChanged();
+
+                //start activity after creating new
+                int position = mAdapter.getItemCount() - 1;
+                CardItem cardItem = mCardItems.get(position);
+                Intent intent = new Intent(MainActivity.this, TaskList.class);
+                intent.putExtra("Card", cardItem);
+                intent.putExtra("APosition", position);
+
+                startActivityForResult(intent, 1);
                 return true;
             case R.id.option:
                 Toast.makeText(this, "Options clicked", Toast.LENGTH_SHORT).show();

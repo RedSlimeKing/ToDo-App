@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -42,15 +43,15 @@ public class TaskList extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
-        /*mListName.setOnKeyListener((v, keyCode, event) -> {
+        mListName.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&  (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 mListName.clearFocus();
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                mCardItem.setTitle(mListName.getText().toString());
                 return true;
             }
             return false;
         });
-        */
 
 
 
