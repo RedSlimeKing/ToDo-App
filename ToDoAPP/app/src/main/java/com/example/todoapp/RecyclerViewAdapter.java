@@ -38,6 +38,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         ViewHolder holder = new ViewHolder(view);
         if(holder.text.getText().toString().equals("")){
             holder.box.setVisibility(View.GONE);
+            holder.text.requestFocus();
         }
         holder.text.setHint("Enter Task");
         return holder;
@@ -83,6 +84,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             return false;
         });
 
+        holder.text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus == false){
+                    mList.get(position).taskString = holder.text.getText().toString();
+                }
+            }
+        });
+
         holder.layout.setOnClickListener(view -> { });
     }
 
@@ -95,7 +105,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TaskItem item = mList.get(position);
         item.isCompleted = !item.isCompleted;
         notifyDataSetChanged();
-        
     }
 
     @Override
