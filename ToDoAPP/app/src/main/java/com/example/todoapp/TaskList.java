@@ -1,6 +1,9 @@
 package com.example.todoapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,14 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
@@ -29,8 +38,10 @@ public class TaskList extends AppCompatActivity {
     private InputMethodManager imm;
     private  RecyclerView rView;
     private int mPosition;
+
+    private NavigationView mNavigationView;
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private static boolean mHideCompleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,19 +79,46 @@ public class TaskList extends AppCompatActivity {
             }
         });
 
-        //mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         Button options = (Button) findViewById(R.id.options_button);
 
         options.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDrawerLayout.openDrawer(Gravity.LEFT);
+                mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
 
+        MenuItem item = (MenuItem) mNavigationView.getMenu().findItem(R.id.hide_complete);
+        SwitchCompat hideSwitch = (SwitchCompat) item.getActionView().findViewById(R.id.switch_comp);
+
+        mHideCompleted = mCardItem.getmHideCompleted();
+        hideSwitch.setChecked(mHideCompleted);
+
         InitRecyclerView();
+
+        hideSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mHideCompleted = isChecked;
+                if(mHideCompleted) {
+                    for (int pos = 0; pos < adapter.mList.size(); pos++) {
+                        RecyclerViewAdapter.ViewHolder holder = (RecyclerViewAdapter.ViewHolder) rView.findViewHolderForAdapterPosition(pos);
+                        if (holder.box.isChecked()) {
+                            holder.hide();
+                        }
+                    }
+                } else {
+                    for (int pos = 0; pos < adapter.mList.size(); pos++) {
+                        RecyclerViewAdapter.ViewHolder holder = (RecyclerViewAdapter.ViewHolder) rView.findViewHolderForAdapterPosition(pos);
+                        holder.show();
+                    }
+
+                }
+            }
+        });
 
         if(mCardItem.getTaskItems().size() <= 0){
             mCardItem.getTaskItems().add(new TaskItem("",false));
@@ -92,7 +130,7 @@ public class TaskList extends AppCompatActivity {
         rView = findViewById(R.id.recyclerView2);
 
         rView.setHasFixedSize(true);
-        adapter = new RecyclerViewAdapter(TaskList.this, mCardItem.getTaskItems());
+        adapter = new RecyclerViewAdapter(TaskList.this, mCardItem.getTaskItems(), rView);
         rView.setAdapter(adapter);
         rView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -107,21 +145,27 @@ public class TaskList extends AppCompatActivity {
                         })
                 );
                 buffer.add(new MyButton(TaskList.this, "Check", 30, R.drawable.ic_check, Color.parseColor("#FF9502"),
-                        pos -> adapter.toggleCheck(pos))
+                        pos -> {
+                            if(pos != mCardItem.getTaskItems().size() - 1) {
+                                adapter.toggleCheck(pos);
+                            }
+                        })
                 );
             }
         });
         adapter.notifyDataSetChanged();
     }
 
+    public static boolean getHideCompleted(){ return mHideCompleted; }
+
     @Override
     public void onStop(){
         super.onStop();
-
     }
 
     @Override
     public void onBackPressed() {
+        mCardItem.setmHideCompleted(mHideCompleted);
         Intent resultIntent = new Intent();
         resultIntent.putExtra("returnCard", mCardItem);
         resultIntent.putExtra("APos", mPosition);

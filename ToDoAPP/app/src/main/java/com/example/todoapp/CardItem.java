@@ -6,10 +6,12 @@ import java.util.ArrayList;
 public class CardItem implements Serializable {
     private String mTitle;
     private ArrayList<TaskItem> mTaskItems;
+    private Boolean mHideCompleted;
 
     public CardItem(String title, ArrayList<TaskItem> items){
         mTitle = title;
         mTaskItems = items;
+        mHideCompleted = false;
     }
 
     public String getTitle() {
@@ -29,4 +31,12 @@ public class CardItem implements Serializable {
     }
 
     public void addTaskItem(TaskItem ti){ this.mTaskItems.add(ti);}
+
+    public Boolean getmHideCompleted() {
+        return mHideCompleted;
+    }
+
+    public void setmHideCompleted(Boolean mHideCompleted) {
+        this.mHideCompleted = mHideCompleted;
+    }
 }

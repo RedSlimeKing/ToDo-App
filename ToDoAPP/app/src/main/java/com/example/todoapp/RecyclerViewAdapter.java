@@ -14,7 +14,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -24,24 +23,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public ArrayList<TaskItem> mList;
     private Context mContext;
     private InputMethodManager imm;
+    private RecyclerView rView;
+    public ArrayList<TaskItem> mHideQueue;
+    public ArrayList<Integer> mHideQueuePosition;
 
-    public RecyclerViewAdapter(Context context, ArrayList<TaskItem> ls){
+    public RecyclerViewAdapter(Context context, ArrayList<TaskItem> ls, RecyclerView recyclerView){
         mContext = context;
         mList = ls;
         imm = (InputMethodManager) mContext.getSystemService(INPUT_METHOD_SERVICE);
+        rView = recyclerView;
+        mHideQueue = new ArrayList<>();
+        mHideQueuePosition = new ArrayList<>();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item, parent,false);
-        ViewHolder holder = new ViewHolder(view);
-        if(holder.text.getText().toString().equals("")){
-            holder.box.setVisibility(View.GONE);
-            holder.text.requestFocus();
-        }
-        holder.text.setHint("Enter Task");
-        return holder;
+        return new ViewHolder(view, TaskList.getHideCompleted());
     }
 
     @Override
@@ -56,7 +55,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         holder.box.setOnClickListener(view -> {
-            mList.get(position).isCompleted = holder.box.isChecked();
+            item.isCompleted = holder.box.isChecked();
+            if(TaskList.getHideCompleted()){
+                holder.hide();
+            }
             holder.box.clearFocus();
             notifyDataSetChanged();
         });
@@ -69,8 +71,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             // If the event is a key-down event on the "enter" button
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&  (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 if(!holder.text.getText().toString().equals("")){
-                    mList.get(position).taskString = holder.text.getText().toString();
-                    holder.text.clearFocus();
+                    item.taskString = holder.text.getText().toString();
                     holder.box.setVisibility(View.VISIBLE);
                     // Create next input
                     if(!mList.get(mList.size()-1).taskString.equals("")){
@@ -78,18 +79,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     }
                     notifyDataSetChanged();
                 }
+                holder.text.clearFocus();
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 return true;
             }
             return false;
         });
 
-        holder.text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus == false){
-                    mList.get(position).taskString = holder.text.getText().toString();
-                }
+        holder.text.setOnFocusChangeListener((view, hasFocus) -> {
+            if(!hasFocus){
+                item.taskString = holder.text.getText().toString();
             }
         });
 
@@ -103,7 +102,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public void toggleCheck(int position) {
         TaskItem item = mList.get(position);
-        item.isCompleted = !item.isCompleted;
+        if(!item.taskString.equals("")){
+            item.isCompleted = !item.isCompleted;
+        }
+
+        if(TaskList.getHideCompleted()) {
+            RecyclerViewAdapter.ViewHolder holder = (RecyclerViewAdapter.ViewHolder) rView.findViewHolderForAdapterPosition(position);
+            if (holder != null) {
+                holder.hide();
+            }
+        }
         notifyDataSetChanged();
     }
 
@@ -116,11 +124,37 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public CheckBox box;
         public EditText text;
         public RelativeLayout layout;
-        public ViewHolder(View itemView){
+        public ViewGroup.LayoutParams params;
+        public ViewHolder(View itemView, boolean hide){
             super(itemView);
             box = itemView.findViewById(R.id.checkBox);
             text = itemView.findViewById(R.id.textView);
             layout = itemView.findViewById(R.id.parent_layout);
+            params = layout.getLayoutParams();
+
+            if(text.getText().toString().equals("")){
+                box.setVisibility(View.GONE);
+            }
+            text.setHint("Enter Task");
+
+            if(hide && box.isChecked()){
+                hide();
+            }
+        }
+
+        public void hide(){
+            itemView.setVisibility(View.GONE);
+            params.height = 0;
+            layout.setLayoutParams(params);
+        }
+
+        public void show(){
+            itemView.setVisibility(View.VISIBLE);
+            if(text.getText().toString().equals("")){
+                box.setVisibility(View.GONE);
+            }
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            layout.setLayoutParams(params);
         }
     }
 }

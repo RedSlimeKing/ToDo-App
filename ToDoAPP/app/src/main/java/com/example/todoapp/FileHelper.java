@@ -27,6 +27,8 @@ public class FileHelper {
             CardItem ci = ls.get(i);
             String item = "ListName" + "[|]" + ci.getTitle();
             saveData.add(item);
+            item = "HideCompleted" + "[|]" + ci.getmHideCompleted();
+            saveData.add(item);
             for(TaskItem ti : ci.getTaskItems()){
                 item = ti.taskString + "[|]" + ti.isCompleted;
                 saveData.add(item);
@@ -63,6 +65,8 @@ public class FileHelper {
                 if(part1.equals("ListName")){
                     index++;
                     cardItems.add(new CardItem(part2, new ArrayList<>()));
+                } else if(part1.equals("HideCompleted")){
+                    cardItems.get(index).setmHideCompleted(Boolean.parseBoolean(part2));
                 } else {
                     cardItems.get(index).addTaskItem(new TaskItem(part1, Boolean.parseBoolean(part2)));
                 }
