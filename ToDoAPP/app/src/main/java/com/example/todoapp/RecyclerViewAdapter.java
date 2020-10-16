@@ -143,15 +143,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         public void hide(){
-            itemView.setVisibility(View.GONE);
+            box.setVisibility(View.GONE);
+            text.setVisibility(View.GONE);
             params.height = 0;
             layout.setLayoutParams(params);
         }
 
         public void show(){
-            itemView.setVisibility(View.VISIBLE);
+            text.setVisibility(View.VISIBLE);
             if(text.getText().toString().equals("")){
                 box.setVisibility(View.GONE);
+            } else {
+                box.setVisibility(View.VISIBLE);
             }
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             layout.setLayoutParams(params);

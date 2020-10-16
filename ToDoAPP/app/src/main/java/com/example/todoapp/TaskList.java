@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -154,9 +155,31 @@ public class TaskList extends AppCompatActivity {
             }
         });
         adapter.notifyDataSetChanged();
+
+        ItemTouchHelper iTH = new ItemTouchHelper(simpleCallback);
+        iTH.attachToRecyclerView(rView);
     }
 
-    public static boolean getHideCompleted(){ return mHideCompleted; }
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            int fromPosition = viewHolder.getAdapterPosition();
+            int toPosition = target.getAdapterPosition();
+
+            Collections.swap(mCardItem.getTaskItems(), fromPosition, toPosition);
+
+            recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
+    };
+
+        public static boolean getHideCompleted(){ return mHideCompleted; }
 
     @Override
     public void onStop(){
