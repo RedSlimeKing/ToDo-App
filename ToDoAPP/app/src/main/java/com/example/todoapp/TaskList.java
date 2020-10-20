@@ -1,6 +1,7 @@
 package com.example.todoapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.view.GravityCompat;
@@ -15,15 +16,11 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -35,9 +32,9 @@ public class TaskList extends AppCompatActivity {
 
     private CardItem mCardItem;
     private EditText mListName;
-    private RecyclerViewAdapter adapter;
+    private RecyclerViewAdapter mAdapter;
     private InputMethodManager imm;
-    private  RecyclerView rView;
+    private  RecyclerView mRecyclerView;
     private int mPosition;
 
     private NavigationView mNavigationView;
@@ -103,17 +100,17 @@ public class TaskList extends AppCompatActivity {
         hideSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mHideCompleted = isChecked;
+                TaskList.setHideCompleted(isChecked);
                 if(mHideCompleted) {
-                    for (int pos = 0; pos < adapter.mList.size(); pos++) {
-                        RecyclerViewAdapter.ViewHolder holder = (RecyclerViewAdapter.ViewHolder) rView.findViewHolderForAdapterPosition(pos);
+                    for (int pos = 0; pos < mAdapter.mList.size(); pos++) {
+                        RecyclerViewAdapter.ViewHolder holder = (RecyclerViewAdapter.ViewHolder) mRecyclerView.findViewHolderForAdapterPosition(pos);
                         if (holder.box.isChecked()) {
                             holder.hide();
                         }
                     }
                 } else {
-                    for (int pos = 0; pos < adapter.mList.size(); pos++) {
-                        RecyclerViewAdapter.ViewHolder holder = (RecyclerViewAdapter.ViewHolder) rView.findViewHolderForAdapterPosition(pos);
+                    for (int pos = 0; pos < mAdapter.mList.size(); pos++) {
+                        RecyclerViewAdapter.ViewHolder holder = (RecyclerViewAdapter.ViewHolder) mRecyclerView.findViewHolderForAdapterPosition(pos);
                         holder.show();
                     }
 
@@ -123,41 +120,41 @@ public class TaskList extends AppCompatActivity {
 
         if(mCardItem.getTaskItems().size() <= 0){
             mCardItem.getTaskItems().add(new TaskItem("",false));
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         }
     }
 
     private void InitRecyclerView(){
-        rView = findViewById(R.id.recyclerView2);
+        mRecyclerView = findViewById(R.id.recyclerView2);
 
-        rView.setHasFixedSize(true);
-        adapter = new RecyclerViewAdapter(TaskList.this, mCardItem.getTaskItems(), rView);
-        rView.setAdapter(adapter);
-        rView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setHasFixedSize(true);
+        mAdapter = new RecyclerViewAdapter(TaskList.this, mCardItem.getTaskItems(), mRecyclerView);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new MySwipeHelper(TaskList.this, rView,200) {
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new MySwipeHelper(TaskList.this, mRecyclerView,200) {
             @Override
             public void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buffer) {
                 buffer.add(new MyButton(TaskList.this, "Delete", 30,R.drawable.ic_delete, Color.parseColor("#FF3c30"),
                         pos -> {
                             if(pos != mCardItem.getTaskItems().size() - 1){
-                                adapter.deleteItem(pos);
+                                mAdapter.deleteItem(pos);
                             }
                         })
                 );
                 buffer.add(new MyButton(TaskList.this, "Check", 30, R.drawable.ic_check, Color.parseColor("#FF9502"),
                         pos -> {
                             if(pos != mCardItem.getTaskItems().size() - 1) {
-                                adapter.toggleCheck(pos);
+                                mAdapter.toggleCheck(pos);
                             }
                         })
                 );
             }
         });
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
 
         ItemTouchHelper iTH = new ItemTouchHelper(simpleCallback);
-        iTH.attachToRecyclerView(rView);
+        iTH.attachToRecyclerView(mRecyclerView);
     }
 
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
@@ -165,6 +162,15 @@ public class TaskList extends AppCompatActivity {
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             int fromPosition = viewHolder.getAdapterPosition();
             int toPosition = target.getAdapterPosition();
+
+            if(fromPosition == recyclerView.getAdapter().getItemCount() - 1){
+                return false;
+            }
+
+            if(toPosition == recyclerView.getAdapter().getItemCount() - 1){
+                toPosition -= 1;
+            }
+
 
             Collections.swap(mCardItem.getTaskItems(), fromPosition, toPosition);
 
@@ -177,13 +183,33 @@ public class TaskList extends AppCompatActivity {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
         }
+
+        @Override
+        public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+            super.onSelectedChanged(viewHolder, actionState);
+
+            if(actionState == ItemTouchHelper.ACTION_STATE_DRAG){
+                if(viewHolder.getAdapterPosition() != mAdapter.getItemCount() - 1){
+                    viewHolder.itemView.setBackgroundColor(Color.WHITE);
+                }
+            }
+        }
+
+        @Override
+        public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            super.clearView(recyclerView, viewHolder);
+            viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        }
     };
 
-        public static boolean getHideCompleted(){ return mHideCompleted; }
+    public static boolean getHideCompleted(){ return mHideCompleted; }
+    public static void setHideCompleted(boolean hide){ mHideCompleted = hide; }
 
     @Override
     public void onStop(){
         super.onStop();
+        mCardItem.setmHideCompleted(mHideCompleted);
+        MainActivity.Save(mPosition, mCardItem);
     }
 
     @Override

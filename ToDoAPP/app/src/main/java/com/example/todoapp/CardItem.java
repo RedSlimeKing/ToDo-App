@@ -32,11 +32,11 @@ public class CardItem implements Serializable {
 
     public void addTaskItem(TaskItem ti){ this.mTaskItems.add(ti);}
 
-    public Boolean getmHideCompleted() {
+    public boolean getmHideCompleted() {
         return mHideCompleted;
     }
 
-    public void setmHideCompleted(Boolean mHideCompleted) {
+    public void setmHideCompleted(boolean mHideCompleted) {
         this.mHideCompleted = mHideCompleted;
     }
 }

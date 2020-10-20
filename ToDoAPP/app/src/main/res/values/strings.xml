@@ -1,5 +1,5 @@
 <resources>
-        <string name="app_name">ToDoAPP</string>
+    <string name="app_name">ToDoAPP</string>
     <string name="switch_hide">Hide</string>
     <string name="switch_show">Show</string>
     <string name="switch_title">Hide Completed</string>

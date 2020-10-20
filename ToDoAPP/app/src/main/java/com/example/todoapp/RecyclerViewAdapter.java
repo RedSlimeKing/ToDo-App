@@ -1,6 +1,7 @@
 package com.example.todoapp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item, parent,false);
-        return new ViewHolder(view, TaskList.getHideCompleted());
+        return new ViewHolder(view);
     }
 
     @Override
@@ -50,16 +51,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.box.setChecked(item.isCompleted);
         holder.text.setText(item.taskString);
 
+        if(item.taskString.equals("") && position == 0){
+            holder.text.requestFocus();
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
+
         if(!item.taskString.equals("")){
             holder.box.setVisibility(View.VISIBLE);
         }
 
         holder.box.setOnClickListener(view -> {
             item.isCompleted = holder.box.isChecked();
+            holder.box.clearFocus();
+
             if(TaskList.getHideCompleted()){
                 holder.hide();
             }
-            holder.box.clearFocus();
+
             notifyDataSetChanged();
         });
 
@@ -93,6 +101,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         });
 
         holder.layout.setOnClickListener(view -> { });
+
+        if(TaskList.getHideCompleted() && holder.box.isChecked()){
+            holder.hide();
+        }
     }
 
     public void deleteItem(int position) {
@@ -125,7 +137,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public EditText text;
         public RelativeLayout layout;
         public ViewGroup.LayoutParams params;
-        public ViewHolder(View itemView, boolean hide){
+
+        public ViewHolder(View itemView){
             super(itemView);
             box = itemView.findViewById(R.id.checkBox);
             text = itemView.findViewById(R.id.textView);
@@ -137,9 +150,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
             text.setHint("Enter Task");
 
-            if(hide && box.isChecked()){
-                hide();
-            }
         }
 
         public void hide(){

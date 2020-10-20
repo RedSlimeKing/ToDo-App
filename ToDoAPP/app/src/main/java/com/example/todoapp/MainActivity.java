@@ -1,5 +1,6 @@
 package com.example.todoapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,9 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
-    private CardAdapter mAdapter;
+    private static CardAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<CardItem> mCardItems;
+    private static ArrayList<CardItem> mCardItems;
+    private static Context mContext;
 
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
@@ -33,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.mainToolBar);
+        toolbar.setTitle("To Do List");
         setSupportActionBar(toolbar);
+
+        mContext = this;
 
         mCardItems = FileHelper.LoadTask(this);
 
@@ -96,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public static void Save(int position, CardItem ci){
+        mCardItems.set(position, ci);
+        mAdapter.notifyDataSetChanged();
+        FileHelper.WriteData(mContext, mCardItems);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -124,9 +135,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("APosition", position);
 
                 startActivityForResult(intent, 1);
-                return true;
-            case R.id.option:
-                Toast.makeText(this, "Options clicked", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
