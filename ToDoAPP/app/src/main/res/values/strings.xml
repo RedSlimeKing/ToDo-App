@@ -3,4 +3,6 @@
     <string name="switch_hide">Hide</string>
     <string name="switch_show">Show</string>
     <string name="switch_title">Hide Completed</string>
+    <string name="options_title">Options</string>
+    <string name="add_card">Add Card</string>
 </resources>

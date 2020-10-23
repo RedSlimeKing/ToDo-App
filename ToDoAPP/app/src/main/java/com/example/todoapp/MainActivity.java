@@ -2,6 +2,7 @@ package com.example.todoapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -73,8 +74,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
+        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        //mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, LinearLayoutManager.VERTICAL) {
+            @Override
+            public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+                // Do not draw the divider
+            }
+        });
 
         ItemTouchHelper iTH = new ItemTouchHelper(simpleCallback);
         iTH.attachToRecyclerView(mRecyclerView);

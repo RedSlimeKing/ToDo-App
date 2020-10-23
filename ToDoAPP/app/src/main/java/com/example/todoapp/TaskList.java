@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -21,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -41,10 +43,16 @@ public class TaskList extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private static boolean mHideCompleted;
 
+    private View activity;
+    private View decorView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        activity = findViewById(R.id.activity_view);
+        decorView = this.getWindow().getDecorView();
 
         //Read the list from the intent:
         mCardItem = (CardItem) getIntent().getSerializableExtra("Card");
@@ -221,4 +229,37 @@ public class TaskList extends AppCompatActivity {
         setResult(1, resultIntent);
         super.onBackPressed();
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateForOrientation(newConfig.orientation);
+    }
+
+    public void updateForOrientation(int orientation) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            hideSystemUI();
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            showSystemUI();
+        }
+    }
+
+    private void hideSystemUI() {
+        System.out.println("Hide UI");
+        activity.setFitsSystemWindows(false);
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+    }
+
+    private void showSystemUI() {
+        activity.setFitsSystemWindows(true);
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+    }
+
 }

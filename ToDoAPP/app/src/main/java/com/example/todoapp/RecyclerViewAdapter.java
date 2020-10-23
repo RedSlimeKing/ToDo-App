@@ -2,12 +2,14 @@ package com.example.todoapp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -68,7 +70,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.hide();
             }
 
-            notifyDataSetChanged();
+            notifyItemChanged(position);
         });
 
         holder.text.setOnClickListener(view -> {
@@ -85,7 +87,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if(!mList.get(mList.size()-1).taskString.equals("")){
                         mList.add(new TaskItem("",false));
                     }
-                    notifyDataSetChanged();
+                    notifyItemChanged(position);
                 }
                 holder.text.clearFocus();
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -124,7 +126,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.hide();
             }
         }
-        notifyDataSetChanged();
+        notifyItemChanged(position);
     }
 
     @Override
@@ -149,7 +151,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 box.setVisibility(View.GONE);
             }
             text.setHint("Enter Task");
-
         }
 
         public void hide(){
