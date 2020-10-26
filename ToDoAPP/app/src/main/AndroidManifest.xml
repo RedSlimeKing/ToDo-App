@@ -17,8 +17,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".TaskList"
-            android:configChanges="orientation|screenSize">
+        <activity android:name=".TaskList">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

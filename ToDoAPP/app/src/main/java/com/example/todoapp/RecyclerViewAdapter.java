@@ -27,16 +27,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context mContext;
     private InputMethodManager imm;
     private RecyclerView rView;
-    public ArrayList<TaskItem> mHideQueue;
-    public ArrayList<Integer> mHideQueuePosition;
 
     public RecyclerViewAdapter(Context context, ArrayList<TaskItem> ls, RecyclerView recyclerView){
         mContext = context;
         mList = ls;
         imm = (InputMethodManager) mContext.getSystemService(INPUT_METHOD_SERVICE);
         rView = recyclerView;
-        mHideQueue = new ArrayList<>();
-        mHideQueuePosition = new ArrayList<>();
     }
 
     @NonNull
