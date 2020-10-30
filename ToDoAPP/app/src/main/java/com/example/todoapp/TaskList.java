@@ -40,20 +40,12 @@ public class TaskList extends AppCompatActivity {
     private  RecyclerView mRecyclerView;
     private int mPosition;
 
-    private NavigationView mNavigationView;
-    private DrawerLayout mDrawerLayout;
     private static boolean mHideCompleted;
-
-    private View activity;
-    private View decorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-
-        activity = findViewById(R.id.activity_view);
-        decorView = this.getWindow().getDecorView();
 
         //Read the list from the intent:
         mCardItem = (CardItem) getIntent().getSerializableExtra("Card");
@@ -63,7 +55,6 @@ public class TaskList extends AppCompatActivity {
         mListName.setText(mCardItem.getTitle());
 
         // Stop items in scene from being pushed up by keyboard
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
@@ -86,20 +77,7 @@ public class TaskList extends AppCompatActivity {
             }
         });
 
-        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        Button options = (Button) findViewById(R.id.options_button);
-
-        options.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDrawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
-
-        MenuItem item = (MenuItem) mNavigationView.getMenu().findItem(R.id.hide_complete);
-        SwitchCompat hideSwitch = (SwitchCompat) item.getActionView().findViewById(R.id.switch_comp);
+        SwitchCompat hideSwitch = findViewById(R.id.switch_comp);
 
         mHideCompleted = mCardItem.getmHideCompleted();
         hideSwitch.setChecked(mHideCompleted);
@@ -122,7 +100,7 @@ public class TaskList extends AppCompatActivity {
                 } else {
                     for (int pos = 0; pos < mAdapter.mList.size(); pos++) {
                         RecyclerViewAdapter.ViewHolder holder = (RecyclerViewAdapter.ViewHolder) mRecyclerView.findViewHolderForAdapterPosition(pos);
-                        holder.show();
+                        if(holder != null) holder.show();
                     }
 
                 }
@@ -168,7 +146,7 @@ public class TaskList extends AppCompatActivity {
         iTH.attachToRecyclerView(mRecyclerView);
     }
 
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             int fromPosition = viewHolder.getAdapterPosition();
@@ -220,11 +198,23 @@ public class TaskList extends AppCompatActivity {
     public void onStop(){
         super.onStop();
         mCardItem.setmHideCompleted(mHideCompleted);
+        mCardItem.setTitle(mListName.getText().toString());
+        MainActivity.Save(mPosition, mCardItem);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mCardItem.setTitle(mListName.getText().toString());
+        mCardItem.setmHideCompleted(mHideCompleted);
         MainActivity.Save(mPosition, mCardItem);
     }
 
     @Override
     public void onBackPressed() {
+
+
+        mCardItem.setTitle(mListName.getText().toString());
         mCardItem.setmHideCompleted(mHideCompleted);
         Intent resultIntent = new Intent();
         resultIntent.putExtra("returnCard", mCardItem);

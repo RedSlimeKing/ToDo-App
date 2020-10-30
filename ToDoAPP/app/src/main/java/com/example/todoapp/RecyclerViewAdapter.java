@@ -49,24 +49,40 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.box.setChecked(item.isCompleted);
         holder.text.setText(item.taskString);
 
+        if(!item.taskString.equals("")) {
+            holder.text.setAlpha(1.0f);
+            holder.box.setAlpha(1.0f);
+            holder.box.setVisibility(View.VISIBLE);
+        }
+
+        if(item.isCompleted){
+            holder.text.setAlpha(0.3f);
+            holder.box.setAlpha(0.3f);
+        }
+
         if(item.taskString.equals("") && position == 0){
             holder.text.requestFocus();
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
 
-        if(!item.taskString.equals("")){
-            holder.box.setVisibility(View.VISIBLE);
-        }
-
         holder.box.setOnClickListener(view -> {
             item.isCompleted = holder.box.isChecked();
-            holder.box.clearFocus();
+            holder.show();
+            if(item.isCompleted){
+                holder.text.setAlpha(0.3f);
+                holder.box.setAlpha(0.3f);
+            } else {
+                holder.text.setAlpha(1.0f);
+                holder.box.setAlpha(1.0f);
+            }
 
             if(TaskList.getHideCompleted()){
                 holder.hide();
             }
 
             notifyItemChanged(position);
+
+            holder.box.clearFocus();
         });
 
         holder.text.setOnClickListener(view -> {

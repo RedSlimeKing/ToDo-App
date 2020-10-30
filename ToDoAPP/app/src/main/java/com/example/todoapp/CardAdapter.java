@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -50,6 +51,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         String title = item.getTitle();
         holder.mTextView.setText(title);
 
+        holder.mTextView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                mListener.onItemClick(position);
+            }
+        });
+
     }
 
     @Override
@@ -63,7 +71,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
     }
 
     class CardViewHolder extends RecyclerView.ViewHolder {
-        public EditText mTextView;
+        public TextView mTextView;
         public CardViewHolder(View itemView, OnItemClickListener listener){
             super(itemView);
 

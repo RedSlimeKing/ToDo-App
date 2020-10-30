@@ -7,6 +7,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,15 +30,25 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private static ArrayList<CardItem> mCardItems;
     private static Context mContext;
+    private TextView textView;
+    private Button addButton;
 
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.mainToolBar);
-        toolbar.setTitle("To Do List");
-        setSupportActionBar(toolbar);
+        textView = findViewById(R.id.titleText);
+        textView.setText("Todo");
+        addButton = findViewById(R.id.addButton);
+        addButton.setOnClickListener(view -> {
+            mCardItems.add(new CardItem("New Item Added", new ArrayList<>()));
+            mAdapter.notifyDataSetChanged();
+
+            //start activity after creating new
+            int position = mAdapter.getItemCount() - 1;
+            LoadCard(position);
+        });
 
         mContext = this;
 
@@ -65,17 +78,9 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new CardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                CardItem item = mCardItems.get(position);
-                Intent intent = new Intent(MainActivity.this, TaskList.class);
-                intent.putExtra("Card", item);
-                intent.putExtra("APosition", position);
-
-                startActivityForResult(intent, 1);
+                LoadCard(position);
             }
         });
-
-        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        //mRecyclerView.addItemDecoration(dividerItemDecoration);
 
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, LinearLayoutManager.VERTICAL) {
             @Override
@@ -88,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         iTH.attachToRecyclerView(mRecyclerView);
     }
 
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             int fromPosition = viewHolder.getAdapterPosition();
@@ -119,32 +124,13 @@ public class MainActivity extends AppCompatActivity {
         FileHelper.WriteData(this, mCardItems);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
+    public void LoadCard(int position){
+        CardItem item = mCardItems.get(position);
+        Intent intent = new Intent(this, TaskList.class);
+        intent.putExtra("Card", item);
+        intent.putExtra("APosition", position);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.add:
-                mCardItems.add(new CardItem("New Item Added", new ArrayList<>()));
-                mAdapter.notifyDataSetChanged();
-
-                //start activity after creating new
-                int position = mAdapter.getItemCount() - 1;
-                CardItem cardItem = mCardItems.get(position);
-                Intent intent = new Intent(MainActivity.this, TaskList.class);
-                intent.putExtra("Card", cardItem);
-                intent.putExtra("APosition", position);
-
-                startActivityForResult(intent, 1);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        startActivityForResult(intent, 1);
     }
 
     @Override
