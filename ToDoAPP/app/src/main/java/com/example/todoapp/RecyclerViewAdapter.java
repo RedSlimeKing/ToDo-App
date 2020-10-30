@@ -132,10 +132,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             item.isCompleted = !item.isCompleted;
         }
 
-        if(TaskList.getHideCompleted()) {
-            RecyclerViewAdapter.ViewHolder holder = (RecyclerViewAdapter.ViewHolder) rView.findViewHolderForAdapterPosition(position);
-            if (holder != null) {
+        RecyclerViewAdapter.ViewHolder holder = (RecyclerViewAdapter.ViewHolder) rView.findViewHolderForAdapterPosition(position);
+        if (holder != null) {
+            if (TaskList.getHideCompleted()) {
                 holder.hide();
+            }
+
+            if(item.isCompleted){
+                holder.text.setAlpha(0.3f);
+                holder.box.setAlpha(0.3f);
+            } else {
+                holder.text.setAlpha(1.0f);
+                holder.box.setAlpha(1.0f);
             }
         }
         notifyItemChanged(position);
