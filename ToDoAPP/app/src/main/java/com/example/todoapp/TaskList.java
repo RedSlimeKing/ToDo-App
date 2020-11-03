@@ -41,11 +41,14 @@ public class TaskList extends AppCompatActivity {
     private int mPosition;
 
     private static boolean mHideCompleted;
+    private static View decor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        decor = getWindow().getDecorView();
 
         //Read the list from the intent:
         mCardItem = (CardItem) getIntent().getSerializableExtra("Card");
@@ -121,17 +124,17 @@ public class TaskList extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new MySwipeHelper(TaskList.this, mRecyclerView,200) {
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new MySwipeHelper(TaskList.this, "TaskList", mRecyclerView,200) {
             @Override
             public void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buffer) {
-                buffer.add(new MyButton(TaskList.this, "Delete", 30,R.drawable.ic_delete, Color.parseColor("#FF3c30"),
+                buffer.add(new MyButton(TaskList.this, "Delete", 30,R.drawable.ic_delete, Color.parseColor("#ebebeb"),
                         pos -> {
                             if(pos != mCardItem.getTaskItems().size() - 1){
                                 mAdapter.deleteItem(pos);
                             }
                         })
                 );
-                buffer.add(new MyButton(TaskList.this, "Check", 30, R.drawable.ic_check, Color.parseColor("#FF9502"),
+                buffer.add(new MyButton(TaskList.this, "Check", 30, R.drawable.ic_check, Color.parseColor("#ebebeb"),
                         pos -> {
                             if(pos != mCardItem.getTaskItems().size() - 1) {
                                 mAdapter.toggleCheck(pos);
@@ -193,6 +196,10 @@ public class TaskList extends AppCompatActivity {
 
     public static boolean getHideCompleted(){ return mHideCompleted; }
     public static void setHideCompleted(boolean hide){ mHideCompleted = hide; }
+
+    public static void Refresh(){
+        decor.findViewById(android.R.id.content).invalidate();
+    }
 
     @Override
     public void onStop(){

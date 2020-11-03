@@ -32,11 +32,14 @@ public class MainActivity extends AppCompatActivity {
     private static Context mContext;
     private TextView textView;
     private Button addButton;
+    private static View decor;
 
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        decor = getWindow().getDecorView();
 
         textView = findViewById(R.id.titleText);
         textView.setText("Todo");
@@ -62,12 +65,14 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new MySwipeHelper(this, mRecyclerView,200) {
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new MySwipeHelper(MainActivity.this, "MainActivity", mRecyclerView,200) {
             @Override
             public void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buffer) {
-                buffer.add(new MyButton(MainActivity.this, "", 24, R.drawable.ic_delete, Color.parseColor("#FF3c30"),
+                buffer.add(new MyButton(MainActivity.this, "Delete", 30,R.drawable.ic_delete, Color.parseColor("#ebebeb"),
                         pos -> {
-                            mAdapter.deleteItem(pos);
+                            if(pos != mCardItems.size() - 1){
+                                mAdapter.deleteItem(pos);
+                            }
                         })
                 );
             }
@@ -75,12 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter.notifyDataSetChanged();
 
-        mAdapter.setOnItemClickListener(new CardAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                LoadCard(position);
-            }
-        });
+        mAdapter.setOnItemClickListener(position -> LoadCard(position));
 
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, LinearLayoutManager.VERTICAL) {
             @Override
@@ -111,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    public static void Refresh(){
+        decor.findViewById(android.R.id.content).invalidate();
+    }
 
     public static void Save(int position, CardItem ci){
         mCardItems.set(position, ci);

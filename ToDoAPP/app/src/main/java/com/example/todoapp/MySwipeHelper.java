@@ -37,6 +37,7 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
     private List<MyButton> buttonList;
     private Queue<Integer> removeQueue;
     private  Map<Integer, List<MyButton>> buttonBuffer;
+    private String mActivity;
 
     private GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener(){
         @Override
@@ -77,7 +78,7 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
 
     };
 
-    public MySwipeHelper(Context context, RecyclerView rView, int buttonWidth) {
+    public MySwipeHelper(Context context, String activity, RecyclerView rView, int buttonWidth) {
             super(0, ItemTouchHelper.LEFT);
             this.mRecyclerView = rView;
             this.buttonList = new ArrayList<>();
@@ -85,6 +86,7 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
             this.mRecyclerView.setOnTouchListener(onTouchListener);
             this.buttonBuffer = new HashMap<>();
             this.buttonWidth = buttonWidth;
+            this.mActivity = activity;
 
             removeQueue = new LinkedList<Integer>(){
                 @Override
@@ -109,6 +111,11 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
             int pos = removeQueue.poll();
             if(pos > -1){
                 mRecyclerView.getAdapter().notifyItemChanged(pos);
+                if(mActivity.equals("TaskList")){
+                    TaskList.Refresh();
+                }else if(mActivity.equals("MainActivity")) {
+                    MainActivity.Refresh();
+                }
             }
         }
     }
@@ -167,8 +174,6 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
             clickRegion = rectF;
             this.pos = pos;
         }
-
-
     } // End of MyButton class
 
     private Bitmap drawableToBitmap(Drawable d) {

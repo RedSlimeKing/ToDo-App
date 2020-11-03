@@ -58,6 +58,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
             }
         });
 
+
     }
 
     @Override
@@ -105,7 +106,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
                 }
                 return false;
             });
-
 
         }
     }
