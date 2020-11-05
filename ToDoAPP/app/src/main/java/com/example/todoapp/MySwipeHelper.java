@@ -213,6 +213,26 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
         buttonBuffer.clear();
         swipeThreshhold = 0.5f * buttonList.size() * buttonWidth;
         recoverSwipedItem();
+        if(mActivity.equals("TaskList")){
+            RecyclerViewAdapter.ViewHolder holder = ( RecyclerViewAdapter.ViewHolder) viewHolder;
+            holder.text.setTextColor(Color.parseColor("#ebebeb"));
+        }else if(mActivity.equals("MainActivity")) {
+            CardAdapter.CardViewHolder holder = (CardAdapter.CardViewHolder) viewHolder;
+            holder.mTextView.setTextColor(Color.WHITE);
+        }
+    }
+
+    @Override
+    public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+        super.clearView(recyclerView, viewHolder);
+
+        if(mActivity.equals("TaskList")){
+            RecyclerViewAdapter.ViewHolder holder = ( RecyclerViewAdapter.ViewHolder) viewHolder;
+            holder.text.setTextColor(Color.BLACK);
+        }else if(mActivity.equals("MainActivity")) {
+            CardAdapter.CardViewHolder holder = (CardAdapter.CardViewHolder) viewHolder;
+            holder.mTextView.setTextColor(Color.BLACK);
+        }
     }
 
     @Override
