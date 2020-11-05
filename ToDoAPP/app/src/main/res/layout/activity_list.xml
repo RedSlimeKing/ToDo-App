@@ -25,16 +25,17 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="29dp"
             android:layout_marginStart="0dp"
             android:layout_marginTop="1dp"
+            android:layout_toStartOf="@+id/switch_comp"
             android:background="@android:color/transparent"
             android:fontFamily="@font/public_sans_bold"
+            android:importantForAutofill="no"
             android:inputType="textMultiLine"
             android:isScrollContainer="false"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:importantForAutofill="no"
             tools:ignore="LabelFor" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -44,7 +45,9 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="0dp"
-            android:layout_toEndOf="@+id/title_editText" />
+            android:minHeight="30dp"
+            android:scaleY="1.3"
+            app:switchMinWidth="70dp" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
