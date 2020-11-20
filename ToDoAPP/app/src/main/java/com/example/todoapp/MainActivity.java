@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private static CardAdapter mAdapter;
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new MySwipeHelper(MainActivity.this, "MainActivity", mRecyclerView,200) {
             @Override
             public void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buffer) {
-                buffer.add(new MyButton(MainActivity.this, "Delete", 30,R.drawable.ic_delete, Color.parseColor("#ebebeb"),
+                buffer.add(new MyButton(MainActivity.this, "Delete", 30, R.drawable.ic_delete, Color.parseColor("#ebebeb"),
                         pos -> {
                             if(pos != mCardItems.size() - 1){
                                 mAdapter.deleteItem(pos);

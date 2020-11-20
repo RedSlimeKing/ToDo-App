@@ -181,6 +181,9 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
             return ((BitmapDrawable)d).getBitmap();
         }
         Bitmap bitmap = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        if(mActivity.equals("MainActivity")){
+            bitmap = Bitmap.createScaledBitmap(bitmap, 150, 150, false);
+        }
         Canvas canvas = new Canvas(bitmap);
         d.setBounds(0,0, canvas.getWidth(), canvas.getHeight());
         d.draw(canvas);
@@ -213,13 +216,6 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
         buttonBuffer.clear();
         swipeThreshhold = 0.5f * buttonList.size() * buttonWidth;
         recoverSwipedItem();
-        if(mActivity.equals("TaskList")){
-            RecyclerViewAdapter.ViewHolder holder = ( RecyclerViewAdapter.ViewHolder) viewHolder;
-            holder.text.setTextColor(Color.parseColor("#ebebeb"));
-        }else if(mActivity.equals("MainActivity")) {
-            CardAdapter.CardViewHolder holder = (CardAdapter.CardViewHolder) viewHolder;
-            holder.mTextView.setTextColor(Color.WHITE);
-        }
     }
 
     @Override
@@ -227,11 +223,9 @@ public abstract class MySwipeHelper extends ItemTouchHelper.SimpleCallback {
         super.clearView(recyclerView, viewHolder);
 
         if(mActivity.equals("TaskList")){
-            RecyclerViewAdapter.ViewHolder holder = ( RecyclerViewAdapter.ViewHolder) viewHolder;
-            holder.text.setTextColor(Color.BLACK);
+            TaskList.Refresh();
         }else if(mActivity.equals("MainActivity")) {
-            CardAdapter.CardViewHolder holder = (CardAdapter.CardViewHolder) viewHolder;
-            holder.mTextView.setTextColor(Color.BLACK);
+            MainActivity.Refresh();
         }
     }
 

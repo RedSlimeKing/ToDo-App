@@ -20,8 +20,8 @@
 
         <Button
             android:id="@+id/addButton"
-            android:layout_width="54dp"
-            android:layout_height="55dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:background="@drawable/ic_add_circle"
             android:elevation="5dp"
             android:shadowColor="#000000"
@@ -53,8 +53,6 @@
         android:layout_alignParentStart="true"
         android:layout_below="@id/headbar"
         android:background="#ebebeb"
-        android:paddingEnd="20dp"
-        android:paddingStart="20dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
